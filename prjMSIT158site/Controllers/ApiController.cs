@@ -58,10 +58,54 @@ namespace prjMSIT158site.Controllers
                 str = "帳號已存在";
             if(mail)
                 str2 = "信箱已存在";
-            var str3 = str + "\n" + str2;
+            var str3 = str + "<br />" + str2;
             return Content(str3.ToString(), "text/plain", System.Text.Encoding.UTF8);
         }
+        //檢查密碼是否重複&&帳號是否存在
+        public IActionResult CheckPassword(Member member, string repassword, IFormFile avatar)
+        {
+            var is_member = _context.Members.Any(x => x.Name == member.Name);
+            var is_mail = _context.Members.Any(x => x.Email == member.Email);
+            var is_password = _context.Members.Any(x => x.Password == member.Password);
+            var is_repassword = _context.Members.Any(x => x.Password == repassword);
+            string str = "密碼相同";
+            string str1 = "帳號可使用";
+            string str2 = "信箱可使用";
+            string str3 = "密碼可使用";
 
+            if(is_member)
+                str1 = "帳號已存在";
+            if(is_mail)
+                str2 = "信箱已存在";
+            if(is_password)
+                str3 = "密碼已存在";
+            if (is_password != is_repassword)
+                str = "密碼有誤";
+            if (string.IsNullOrEmpty(member.Name))
+                member.Name = "guset";
+
+            //實際路徑
+            //string upLoadPath = Path.Combine(_hostEnvironment.WebRootPath, "uploads", avatar.FileName);
+            //string info = upLoadPath;
+            //using(var fileStream = new FileStream(upLoadPath,FileMode.Create))
+            //{
+            //    avatar.CopyTo(fileStream);
+            //}
+
+            //檔案上傳轉成二進位
+            byte[] imgByte = null;
+            using(var memoryStream = new MemoryStream()) 
+            {
+                avatar.CopyTo(memoryStream);
+                imgByte = memoryStream.ToArray();
+            }
+            //寫進資料庫
+            member.FileData = imgByte;
+            //_context.Members.Add(member);
+            //_context.SaveChanges();
+
+            return Content(str.ToString(), "text/plain", System.Text.Encoding.UTF8);
+        }
 
         public IActionResult Avatar(int id=1)
         {

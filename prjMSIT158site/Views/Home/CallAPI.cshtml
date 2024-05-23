@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "CallAPI";
+}
+
+<h1>CallAPI</h1>
+
+<div id="div1" class="alert alert-info mt-3"></div>
+@section Styles{
+    <style>
+
+    </style>
+}
+@section Scripts{
+    <script>
+        const divResult = document.querySelector("#div1");
+        (async()=>{
+            const response = await fetch('https://localhost:7179/api/Categories');
+            const data = await response.json();
+            console.log(data);
+            for(let i= 0;i<11;i++){
+                divResult.textContent += data[i].categoryName + "\r\n";
+            }
+            //divResult.textContent = data[3].categoryName;
+                })();       
+    </script>
+}

@@ -51,10 +51,15 @@ namespace prjMSIT158site.Controllers
         public IActionResult CheckAccount(string name)
         {
             var member = _context.Members.Any(m => m.Name == name);
+            var mail = _context.Members.Any(m => m.Email == name);
             var str = "帳號可使用";
+            var str2 = "信箱可使用";
             if (member)
                 str = "帳號已存在";
-            return Content(str.ToString(), "text/plain", System.Text.Encoding.UTF8);
+            if(mail)
+                str2 = "信箱已存在";
+            var str3 = str + "\n" + str2;
+            return Content(str3.ToString(), "text/plain", System.Text.Encoding.UTF8);
         }
 
 

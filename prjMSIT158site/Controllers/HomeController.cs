@@ -47,9 +47,20 @@ namespace prjMSIT158site.Controllers
             return View();
         }
 
+        public IActionResult CallAPI()
+        {
+            return View();
+        }
 
+        public IActionResult History()
+        {
+            return View();
+        }
 
-
+        public IActionResult AutoComplete()
+        {
+            return View();
+        }
 
 
 

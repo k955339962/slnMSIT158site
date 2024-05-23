@@ -1,0 +1,75 @@
+﻿@model IEnumerable<prjMSIT158site.Models.Category>
+@{
+    ViewData["Title"] = "Home Page";
+}
+@section Styles{
+    <style>
+        h1 {
+            background-color: burlywood;
+        }
+    </style>
+}
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<ul>
+    @foreach(var x in Model)
+    {
+        <li>@x.CategoryName</li>
+    }
+</ul>
+@section Scripts{
+    <script>
+        let x = document.querySelector("h1.display-4");
+        console.log(x);
+        x.addEventListener('mouseover', (evt) => {
+            evt.target.style.backgroundColor = 'pink';
+        })
+
+
+
+
+
+
+
+
+
+        // 定義一個函數 'printSomething'，返回一個 Promise
+        function printSomething(data){
+            const promise = new Promise(function(resolve,reject){
+                // 設置一個定時器，1秒後解決該 Promise，返回 'data'
+                setTimeout(()=>{
+                    resolve(data);
+                },1000)
+            })
+            return promise;
+        }
+
+        //printSomething(`A`)
+        //    .then((data) => {
+        //        console.log(data);
+        //        return printSomething(`B`);
+        //    })
+        //    .then((data) => {
+        //        console.log(data);
+        //        return printSomething(`C`);
+        //    })
+        //    .then((data) => {
+        //        console.log(data);
+        //    })
+
+
+
+        // 使用 async/await 語法按順序調用 'printSomething' 函數
+        (async ()=>{
+            let data = await printSomething(`A`);
+            console.log(data); // 打印 'A'
+            data = await printSomething(`B`);
+            console.log(data); // 打印 'B'
+            data = await printSomething(`C`);
+            console.log(data); // 打印 'C'
+        })();
+    </script>
+}

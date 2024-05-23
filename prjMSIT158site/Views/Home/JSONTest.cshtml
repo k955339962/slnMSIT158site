@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewData["Title"] = "JSONTest";
+}
+
+<h1>JSON練習</h1>
+
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<ul id="ul1"></ul>
+
+<table id="table1" class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>姓名</th>
+            <th>年資</th>
+            <th>薪水</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>
+
+@section Styles{
+
+}
+@section Scripts{
+    <script>
+        const myUl = document.getElementById(`ul1`);
+        const tb1 = document.querySelector(`#table1>tbody`);
+
+        const emp = {
+            "employees": [
+                { "name": "Tom", "workYears": 3, "salary": 35000 },
+                { "name": "Jack", "workYears": 5, "salary": 40000 },
+                { "name": "Mary", "workYears": 7, "salary": 45000 }
+            ]
+        };
+
+        for (let i = 0, max = emp.employees.length; i < max; i++) {
+            console.log(emp.employees[i].name);
+            console.log(emp.employees[i].workYears);
+            console.log(emp.employees[i].salary);
+        }
+
+        // 將 emp.employees 中的每個員工的name映射到一個 HTML 列表項字符串
+        const emps = emp.employees.map(emp=>`<li>${emp.name}</li>`)
+        // 將陣列 `emps` 中的資料拼接成一個字串，並插入到 ID 為 `ul1` 的元素中
+        document.getElementById(`ul1`).innerHTML = emps.join("");
+
+
+
+        const empss  = emp.employees.map(employee => {
+            // 解構賦值
+            const {name,workYears,salary} = employee;
+            return(
+                `                
+                <tr>
+                <td>${name}</td>
+                <td>${workYears}</td>
+                <td>${salary}</td>
+                </tr>               
+                `
+            )
+        })
+        // 將生成的表格行字符串加入到 `tbody` 中
+        tb1.innerHTML = empss.join("");
+    </script>
+}

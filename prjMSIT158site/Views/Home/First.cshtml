@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewData["Title"] = "First";
+}
+
+<h1>First Ajax Dome</h1>
+
+<button id="btnstart" class="btn btn-primary" >Ajax 開始</button>
+<button id="btnstop" class="btn btn-warning">Ajax 停止</button>
+<img src="~/images/hourglass.gif" id="imgLoading" style="display:none"/>
+<div id="idiv"></div>
+@section Styles{
+
+}
+@section Scripts{
+    <script>
+        const btn = document.querySelector("#btnstart");
+        const btnstop = document.querySelector("#btnstop");
+        const div1 = document.querySelector("#idiv");
+        const imgLoad = document.querySelector("#imgLoading");
+        let abortController;
+        btnstop.addEventListener(`click`, () => {
+            // 如果 abortController 存在，則中止請求
+            if (abortController)
+                abortController.abort();
+        })
+
+        btn.addEventListener(`click`, async () => {                        
+            try {
+                imgLoad.style.display = "inline"; //顯示執行的圖片
+                btn.setAttribute("disabled", "disabled"); //讓按鈕不能使用
+
+                //取消ajax程式的執行
+                abortController = new AbortController();
+                const signal = abortController.signal;
+
+                // 設置超時，5秒後自動取消請求
+                setTimeout(() => {
+                    abortController.abort();
+                }, 5000)
+
+                //Ajax 程式
+                const response = await fetch(`@Url.Content("~/api/index")`, { signal });
+                const data = await response.text();
+                if (!response.ok)
+                    throw new Error(`${response.status}`);
+                div1.textContent = `<h2>${data}</h2>`
+            } catch (error) {
+                div1.textContent = `<h2>${error.message}</h2>`
+            }finally{
+                imgLoad.style.display = "none"; //隱藏執行的圖片
+                btn.removeAttribute("disabled"); //讓按鈕可以按
+            }
+
+
+
+
+
+
+
+            //console.log(fetch(`@Url.Content("~/api/index")`));
+            //// 發送 GET 請求到後端 API
+            //fetch(`@Url.Content("~/api/index")`)
+            //.then(response=>{
+            //    console.log(response);
+            //        // 遍歷並打印響應頭部的每個字段
+            //    response.headers.forEach((value, name)=>{
+            //            console.log(`${name}:${value}`);
+            //    });
+            //    console.log(response.ok);
+
+            //    return response.text();
+            //})
+            //.then(data =>{
+            //        div1.textContent = `<h2>${data}</h2>`;
+            //})
+        })
+    </script>
+}

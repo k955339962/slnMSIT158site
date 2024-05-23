@@ -1,0 +1,94 @@
+﻿
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Register</h1>
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <h1>Register</h1>
+        <form method="post" action="~/api/register" id="userFrom">
+            <div class="mb-3">
+                <label for="InputName" class="form-label">姓名</label>
+                <input type="text" class="form-control" id="InputName" name="name">
+
+            </div>
+            <div class="mb-3">
+                <label for="InputEmail" class="form-label">電子郵件</label>
+                <input type="email" class="form-control" id="InputEmail" name="email">
+            </div>
+            <div class="mb-3">
+                <label for="InputAge" class="form-label">年紀</label>
+                <input type="number" class="form-control" id="InputAge" name="age">
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">圖像</label>
+                <input class="form-control" type="file" id="formFile" name="avatar">
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="buttonSubmit">送出</button>
+        </form>
+        <div id="div1" class="alert alert-info mt-3"></div>
+
+    </div>
+    <div class="col-3"></div>
+</div>
+@section Styles{
+
+}
+@section Scripts{
+    <script>
+        const divResult = document.querySelector("#div1");
+        const btnSubmit = document.querySelector('#buttonSubmit');
+        const inpName = document.querySelector('#InputName');
+        const inpEmail = document.querySelector('#InputEmail');
+        const inpAge = document.querySelector('#InputAge');
+
+        btnSubmit.addEventListener('click', async (evt)=>{
+            evt.preventDefault(); //防止預設行為的發生
+
+
+            //將資料放進FormData
+            const myForm = document.querySelector('#userFrom');
+            const fromData = new FormData(myForm);
+
+            //formData.append("password", "12345678");
+            //讀出formData中的資料
+            //for(const pair of formData.entries()){
+            //    console.log(`${pair[0]}:${pair[1]}`);
+            //}
+
+            const url = '@Url.Content("~/api/register/")';
+            const response = await fetch(url,{
+                method:'POST',
+                body:fromData
+            });
+
+            const data = await response.text();
+            divResult.textContent = data;
+
+
+
+
+            //const url = `@Url.Content("~/api/register/")?email=${inpEmail.value}&age=${inpAge.value}&name=${inpName.value}`;
+            //const response = await fetch(url);
+            //const data = await response.text();
+
+            //divResult.textContent = data;
+        })
+
+
+       //(async ()=>{
+       //     // 構建 API 的 URL，包含查詢參數 id、age 和 name
+       //     const url = '@Url.Content("~/api/register")?id=1&age= 29&name=marco';
+       //     // 使用 fetch 發送 GET 請求到指定的 URL
+       //     const response = await fetch(url);
+       //     // 等待並讀取回應的文本內容
+       //     const data = await response.text();
+       //     // 將獲取到的數據顯示在 divResult 元素中
+       //     divResult.innerHTML = data;
+       //})();
+    </script>
+}

@@ -65,22 +65,24 @@ namespace prjMSIT158site.Controllers
         public IActionResult CheckPassword(Member member, string repassword, IFormFile avatar)
         {
             var is_member = _context.Members.Any(x => x.Name == member.Name);
-            var is_mail = _context.Members.Any(x => x.Email == member.Email);
+            var is_mail = _context.Members.Any(x => x.Email == member.Email); 
             var is_password = _context.Members.Any(x => x.Password == member.Password);
-            var is_repassword = _context.Members.Any(x => x.Password == repassword);
-            string str = "密碼相同";
+            string str = "密碼有誤";
             string str1 = "帳號可使用";
             string str2 = "信箱可使用";
             string str3 = "密碼可使用";
-
-            if(is_member)
+            
+            if (is_member)
                 str1 = "帳號已存在";
             if(is_mail)
                 str2 = "信箱已存在";
-            if(is_password)
-                str3 = "密碼已存在";
-            if (is_password != is_repassword)
-                str = "密碼有誤";
+            if (member.Password == repassword)
+            {
+                str = "密碼可使用";
+                if (is_password)
+                    str3 = "密碼已存在";
+            }
+
             if (string.IsNullOrEmpty(member.Name))
                 member.Name = "guset";
 
@@ -94,17 +96,22 @@ namespace prjMSIT158site.Controllers
 
             //檔案上傳轉成二進位
             byte[] imgByte = null;
-            using(var memoryStream = new MemoryStream()) 
-            {
-                avatar.CopyTo(memoryStream);
-                imgByte = memoryStream.ToArray();
+            if(avatar != null) {
+                using (var memoryStream = new MemoryStream())
+                {
+                    avatar.CopyTo(memoryStream);
+                    imgByte = memoryStream.ToArray();
+                }
             }
             //寫進資料庫
             member.FileData = imgByte;
-            //_context.Members.Add(member);
-            //_context.SaveChanges();
-
-            return Content(str.ToString(), "text/plain", System.Text.Encoding.UTF8);
+            _context.Members.Add(member);
+            _context.SaveChanges();
+            if(!string.IsNullOrEmpty(member.Email)&&!string.IsNullOrEmpty(member.Password))
+                str = str + "<hr />" + str1 + "<hr />" + str2 + "<hr />" + str3 + "<br />" + "上傳成功";
+            else
+                str = "信箱&密碼 都要輸入";
+            return Content(str.ToString(), "text/html", System.Text.Encoding.UTF8);
         }
 
         public IActionResult Avatar(int id=1)

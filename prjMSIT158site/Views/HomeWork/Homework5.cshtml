@@ -1,0 +1,163 @@
+﻿
+@{
+    ViewData["Title"] = "Homework5";
+}
+
+<h1>作業4 – 完成景點瀏覽功能</h1>
+
+<h2>台北市景點</h2>
+
+<div class="row mb-3">
+    <div class="col-3">
+        <select class="form-select" aria-label="Default select example" id="op1">
+            
+        </select>
+    </div>
+    <div class="col-6">
+        <nav>
+            <ul class="pagination" id="ul1">
+            </ul>
+        </nav>
+    </div>
+    <div class="col-1">
+        <select class="form-select" aria-label="Default select example" id="op2">
+            <option selected>升冪</option>
+            <option value="asc">景點編號升冪</option>
+            <option value="desc">景點編號降冪</option>
+        </select>
+    </div>
+    <div class="col-2">
+        <input type="search" placeholder="搜尋景點資料" class="form-control" id="inputSearch" />
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-12">
+        <nav>
+            <ul class="pagination  pagination-lg" id="ul2">
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4" id="div1">
+</div>
+@section Styles{
+    <style>
+
+    </style>
+}
+@section Scripts{
+    <script>
+        const divSpots = document.querySelector('#div1');
+        const ulPaging = document.querySelector('#ul1');
+        const ulPagename = document.querySelector('#ul2');
+        const inpSearch = document.querySelector('#inputSearch');
+        const sltop = document.querySelector('#op1');
+        const sltop2 = document.querySelector('#op2');
+
+
+        const searchData = {
+            "categoryId": 0,
+            "keyword": "",
+            "page": 1,
+            "pageSize": 21,
+            "sortType": "asc",
+            "sortBy": "SpotId"
+        };
+
+        const loadSpots = async()=>{
+            const url = 'https://localhost:7179/api/Spots';
+            const response = await fetch(url,{
+                method: 'POST',
+                body: JSON.stringify(searchData),
+                headers: {'Content-Type':'application/json'}
+            });
+            const data = await response.json();
+            console.log(data);
+            console.log(data.spotsResult);
+
+            //顯示景點資料
+            const spots = data.spotsResult.map(spot=>{
+                const { spotId, spotTitle, spotDescription, address, spotImage } = spot;
+                return (
+                    `
+                <div class="col">
+                <div class="card">
+                    <img src="${spotImage}" class="card-img-top" alt="${spotTitle}">
+                <div class="card-body">
+                    <h5 class="card-title">${spotId} ${spotTitle}</h5>
+                    <p class="card-text">${spotDescription.length <= 100 ? spotDescription : spotDescription.substring(0, 100)}</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-body-secondary">${address}</small>
+                </div>
+                </div>
+                </div>
+                    `
+                )                
+            })
+            divSpots.innerHTML = spots.join("");
+
+            //顯示分頁按鈕
+            let liPages = "";
+            for (let i = 1, max = data.totalPages; i <= max; i++) {
+                liPages += `<li class="page-item" onclick="pagingHandler(${i})"><a class="page-link">${i}</a></li>`
+            }
+            ulPaging.innerHTML = liPages;
+
+            //顯示選擇頁數按鈕
+            let sltPages = "<option selected>顯示資料筆數</option>";
+            for (let i = 3, max = 9; i <= max; i += 3) {
+                sltPages += `<option value="${i}">每頁${i}筆資料</option>`
+            }
+            sltop.innerHTML = sltPages;
+
+            //顯示category
+            urll = 'https://localhost:7179/api/Categories';
+            const response2 = await fetch(urll) ;
+            const datas = await response2.json();
+            console.log(datas);
+            console.log(datas[2].categoryName);
+            const category = datas.map(caa => {
+                const { categoryName, categoryId } = caa
+                return(
+                    `
+                <li class="page-item" onclick="pagecategory(${categoryId})"><a class="page-link">${categoryName}</a></li>
+                    `
+                )
+            })
+            ulPagename.innerHTML = category.join("");
+        }
+        loadSpots();
+
+        //搜尋欄
+        inpSearch.addEventListener('keydown', event => {
+            if (event.keyCode === 13) {
+                alert(event.target.value);
+                searchData.keyword = event.target.value;
+                loadSpots();
+            }
+        })
+        //分頁按鈕
+        const pagingHandler = page=>{
+            searchData.page = page;
+            loadSpots();
+        }
+        //選擇頁數按鈕
+        sltop.addEventListener('change',event=>{
+            searchData.pageSize = event.target.value;
+            loadSpots();
+        })
+        //選擇排序
+        sltop2.addEventListener('change',event=>{
+            searchData.sortType = event.target.value;
+            loadSpots();
+        })
+        //分類按鈕
+        const pagecategory = pageid=>{
+            searchData.categoryId = pageid;
+            loadSpots();
+        }
+    </script>
+}

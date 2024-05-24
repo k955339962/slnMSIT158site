@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "prjMSIT158site", "prjMSIT158site\prjMSIT158site.csproj", "{FE442B02-9409-4510-A6BC-8F9DD58C9AB3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "prjMSIT158API", "..\slnMSIT158API\prjMSIT158API\prjMSIT158API.csproj", "{9B269126-C47E-4E92-849C-7322DC142FB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "prjMSIT158API", "prjMSIT158API\prjMSIT158API.csproj", "{54315F68-DAF7-4B4A-9189-931113C27D5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{FE442B02-9409-4510-A6BC-8F9DD58C9AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE442B02-9409-4510-A6BC-8F9DD58C9AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE442B02-9409-4510-A6BC-8F9DD58C9AB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B269126-C47E-4E92-849C-7322DC142FB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B269126-C47E-4E92-849C-7322DC142FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B269126-C47E-4E92-849C-7322DC142FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B269126-C47E-4E92-849C-7322DC142FB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54315F68-DAF7-4B4A-9189-931113C27D5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54315F68-DAF7-4B4A-9189-931113C27D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54315F68-DAF7-4B4A-9189-931113C27D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54315F68-DAF7-4B4A-9189-931113C27D5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

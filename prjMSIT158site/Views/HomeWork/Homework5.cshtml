@@ -136,6 +136,8 @@
             if (event.keyCode === 13) {
                 alert(event.target.value);
                 searchData.keyword = event.target.value;
+                searchData.categoryId = 0;
+                searchData.page = 1;
                 loadSpots();
             }
         })
@@ -157,6 +159,7 @@
         //分類按鈕
         const pagecategory = pageid=>{
             searchData.categoryId = pageid;
+            searchData.page = 1;
             loadSpots();
         }
     </script>

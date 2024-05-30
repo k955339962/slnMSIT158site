@@ -48,18 +48,30 @@ namespace prjMSIT158site.Controllers
         }
 
         //檢查帳號是否存在
-        public IActionResult CheckAccount(string name)
+        public IActionResult CheckAccount(Member member)
         {
-            var member = _context.Members.Any(m => m.Name == name);
-            var mail = _context.Members.Any(m => m.Email == name);
+            var is_member = _context.Members.Any(m => m.Name == member.Name);
+            var is_mail = _context.Members.Any(m => m.Email == member.Email); 
+            var is_password = _context.Members.Any(m => m.Password == member.Password);
+            var Mname = _context.Members.Where(x=>x.Name == member.Name);
+            var Memail = _context.Members.Where(x=>x.Email == member.Email);
+            var Mpassword = _context.Members.Where(x=>x.Password == member.Password);
             var str = "帳號可使用";
             var str2 = "信箱可使用";
-            if (member)
+
+            if (is_member)
                 str = "帳號已存在";
-            if(mail)
-                str2 = "信箱已存在";
+            if (is_mail)
+                //str2 = "信箱已存在";
+                Mname.ToString();
+            //var str3 = str + "<br />" + str2;
+
+            if(is_password)
+                Mpassword.ToString();
+
+            var strA = Mname.ToString() + "<br />" + Mpassword.ToString();
             var str3 = str + "<br />" + str2;
-            return Content(str3.ToString(), "text/plain", System.Text.Encoding.UTF8);
+            return Content(strA.ToString(), "text/plain", System.Text.Encoding.UTF8);
         }
         //檢查密碼是否重複&&帳號是否存在
         public IActionResult CheckPassword(Member member, string repassword, IFormFile avatar)

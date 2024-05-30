@@ -106,12 +106,7 @@
             }
             ulPaging.innerHTML = liPages;
 
-            //顯示選擇頁數按鈕
-            let sltPages = "<option selected>顯示資料筆數</option>";
-            for (let i = 3, max = 9; i <= max; i += 3) {
-                sltPages += `<option value="${i}">每頁${i}筆資料</option>`
-            }
-            sltop.innerHTML = sltPages;
+          
 
             //顯示category
             urll = 'https://localhost:7179/api/Categories';
@@ -130,7 +125,12 @@
             ulPagename.innerHTML = category.join("");
         }
         loadSpots();
-
+        //顯示選擇頁數按鈕
+        let sltPages = "";
+        for (let i = 3, max = 21; i <= max; i += 3) {
+            sltPages += `<option value="${i}">每頁${i}筆資料</option>`
+        }
+        sltop.innerHTML = sltPages;
         //搜尋欄
         inpSearch.addEventListener('keydown', event => {
             if (event.keyCode === 13) {

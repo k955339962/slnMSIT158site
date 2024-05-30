@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using prjMSIT158site.Models;
 using prjMSIT158site.Models.DTO;
 using System.Linq;
+using System.Text.Json;
 
 namespace prjMSIT158site.Controllers
 {
@@ -48,30 +49,45 @@ namespace prjMSIT158site.Controllers
         }
 
         //檢查帳號是否存在
-        public IActionResult CheckAccount(Member member)
+        public IActionResult CheckAccount(string name, string email, string password)
         {
-            var is_member = _context.Members.Any(m => m.Name == member.Name);
-            var is_mail = _context.Members.Any(m => m.Email == member.Email); 
-            var is_password = _context.Members.Any(m => m.Password == member.Password);
-            var Mname = _context.Members.Where(x=>x.Name == member.Name);
-            var Memail = _context.Members.Where(x=>x.Email == member.Email);
-            var Mpassword = _context.Members.Where(x=>x.Password == member.Password);
+            var is_member = _context.Members.Any(m => m.Name == name);
+            var is_mail = _context.Members.Any(m => m.Email == email); 
+            var is_password = _context.Members.Any(m => m.Password == password);
+            var Mname = _context.Members.Where(x=>x.Name == name);
+            var Memail = _context.Members.Where(x=>x.Email == email);
+            var Mpassword = _context.Members.Where(x=>x.Password == password);
             var str = "帳號可使用";
             var str2 = "信箱可使用";
-
+            string json = "";
             if (is_member)
                 str = "帳號已存在";
             if (is_mail)
-                //str2 = "信箱已存在";
                 Mname.ToString();
+                //str2 = "信箱已存在";
             //var str3 = str + "<br />" + str2;
 
-            if(is_password)
+            if (is_password)
                 Mpassword.ToString();
+                //str = "密碼已存在";
 
             var strA = Mname.ToString() + "<br />" + Mpassword.ToString();
-            var str3 = str + "<br />" + str2;
-            return Content(strA.ToString(), "text/plain", System.Text.Encoding.UTF8);
+            var str3 = str2 + "<br />" + str;
+            //======================================================
+            Member user = _context.Members.FirstOrDefault(
+                t => t.Email.Equals(email) && t.Password.Equals(password));
+
+            if (user != null && user.Password.Equals(password))
+            {
+                json = JsonSerializer.Serialize(user);
+                //HttpContext.Session.SetString(CDictionary.SK_LOGIN_MEMBER, json);
+
+                //return RedirectToAction("Index");
+            }
+            //=====================================================
+            
+
+            return Content(json, "text/plain", System.Text.Encoding.UTF8);
         }
         //檢查密碼是否重複&&帳號是否存在
         public IActionResult CheckPassword(Member member, string repassword, IFormFile avatar)

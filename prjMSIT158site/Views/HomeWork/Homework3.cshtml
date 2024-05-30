@@ -61,7 +61,7 @@
             //將資料放進FormData
             const myForm = document.querySelector('#userFrom');
             const fromdata = new FormData(myForm);
-            console.log(fromdata);
+
             //formData.append("password", "12345678");
             //讀出formData中的資料
             //for(const pair of formData.entries()){
@@ -73,10 +73,11 @@
                 method: 'POST',
                 body: fromdata
             });
-
+            console.log(response);
             const data = await response.text();
             divResult.innerHTML = data;
-
+            console.log(data);
+            console.log(data.Name);
 
 
 

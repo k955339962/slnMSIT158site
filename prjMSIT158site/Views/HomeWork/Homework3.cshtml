@@ -73,11 +73,11 @@
                 method: 'POST',
                 body: fromdata
             });
-            console.log(response);
             const data = await response.text();
-            divResult.innerHTML = data;
-            console.log(data);
-            console.log(data.Name);
+            const json = JSON.parse(data);
+            const Jname = json.Name;
+            const Jid = json.MemberId;
+            divResult.textContent = '編號是:' + Jid;
 
 
 

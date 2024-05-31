@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using prjMSIT158site.Models;
 using prjMSIT158site.Models.DTO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
 namespace prjMSIT158site.Controllers
@@ -51,6 +53,8 @@ namespace prjMSIT158site.Controllers
         //檢查帳號是否存在
         public IActionResult CheckAccount(string name, string email, string password)
         {
+            //密碼加密，使用 SHA256 演算法
+            password = GetSha256Hash(password);
             var is_member = _context.Members.Any(m => m.Name == name);
             var is_mail = _context.Members.Any(m => m.Email == email); 
             var is_password = _context.Members.Any(m => m.Password == password);
@@ -102,17 +106,41 @@ namespace prjMSIT158site.Controllers
             
             if (is_member)
                 str1 = "帳號已存在";
-            if(is_mail)
+            if (is_mail)
                 str2 = "信箱已存在";
+            if (string.IsNullOrEmpty(member.Name))
+                member.Name = "guset";
+
+            //檔案上傳轉成二進位
+            byte[] imgByte = null;
             if (member.Password == repassword)
             {
                 str = "密碼可使用";
                 if (is_password)
                     str3 = "密碼已存在";
+
+                //檔案上傳轉成二進位
+                if (avatar != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        avatar.CopyTo(memoryStream);
+                        imgByte = memoryStream.ToArray();
+                    }
+                }
+                //密碼加密，使用 SHA256 演算法
+                member.Password = GetSha256Hash(member.Password);
+
+                //信箱不重複，才可以寫進資料庫
+                if (!is_mail)
+                {
+                member.FileData = imgByte;
+                _context.Members.Add(member);
+                _context.SaveChanges();
+                }
             }
 
-            if (string.IsNullOrEmpty(member.Name))
-                member.Name = "guset";
+
 
             //實際路徑
             //string upLoadPath = Path.Combine(_hostEnvironment.WebRootPath, "uploads", avatar.FileName);
@@ -122,25 +150,42 @@ namespace prjMSIT158site.Controllers
             //    avatar.CopyTo(fileStream);
             //}
 
-            //檔案上傳轉成二進位
-            byte[] imgByte = null;
-            if(avatar != null) {
-                using (var memoryStream = new MemoryStream())
-                {
-                    avatar.CopyTo(memoryStream);
-                    imgByte = memoryStream.ToArray();
-                }
-            }
-            //寫進資料庫
-            member.FileData = imgByte;
-            _context.Members.Add(member);
-            _context.SaveChanges();
+            
             if(!string.IsNullOrEmpty(member.Email)&&!string.IsNullOrEmpty(member.Password))
                 str = str + "<hr />" + str1 + "<hr />" + str2 + "<hr />" + str3 + "<br />" + "上傳成功";
             else
                 str = "信箱&密碼 都要輸入";
             return Content(str.ToString(), "text/html", System.Text.Encoding.UTF8);
         }
+        //密碼，產生一個隨機鹽
+        private string CreateSalt()
+        {
+            byte[] saltBytes = new byte[16];
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(saltBytes);
+            }
+            return Convert.ToBase64String(saltBytes);
+        }
+        // 使用 SHA256 演算法對密碼進行加密處理
+        private string GetSha256Hash(string input)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+                byte[] hashBytes = sha256.ComputeHash(inputBytes);
+
+                // 將 byte 陣列轉換成 16 進位字串
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return sb.ToString();
+            }
+        }
+
+
 
         public IActionResult Avatar(int id=1)
         {

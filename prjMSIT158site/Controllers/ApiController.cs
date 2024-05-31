@@ -53,8 +53,12 @@ namespace prjMSIT158site.Controllers
         //檢查帳號是否存在
         public IActionResult CheckAccount(string name, string email, string password)
         {
+            // 從資料庫中獲取用戶的鹽和雜湊後的密碼
+            Member used = _context.Members.FirstOrDefault(x => x.Email == email);
+            string salt = used.Salt;
+            string Passwordsalted =password + salt;            
             //密碼加密，使用 SHA256 演算法
-            password = GetSha256Hash(password);
+            password = GetSha256Hash(Passwordsalted);
             var is_member = _context.Members.Any(m => m.Name == name);
             var is_mail = _context.Members.Any(m => m.Email == email); 
             var is_password = _context.Members.Any(m => m.Password == password);
@@ -128,15 +132,20 @@ namespace prjMSIT158site.Controllers
                         imgByte = memoryStream.ToArray();
                     }
                 }
+
+                // 產生一個隨機鹽
+                string salt = CreateSalt();
+                string Passwordsalted = member.Password + salt;
                 //密碼加密，使用 SHA256 演算法
-                member.Password = GetSha256Hash(member.Password);
+                member.Password = GetSha256Hash(Passwordsalted);
 
                 //信箱不重複，才可以寫進資料庫
                 if (!is_mail)
                 {
-                member.FileData = imgByte;
-                _context.Members.Add(member);
-                _context.SaveChanges();
+                    member.FileData = imgByte;
+                    member.Salt = salt;
+                    _context.Members.Add(member);
+                    _context.SaveChanges();
                 }
             }
 

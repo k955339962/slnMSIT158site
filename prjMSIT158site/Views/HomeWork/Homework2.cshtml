@@ -2,8 +2,10 @@
 @{
     ViewData["Title"] = "Homework2";
 }
-
-<h1>練習2 縣市資料</h1>
+<div>
+    <h1>練習2 縣市資料</h1>
+    <p id="p1"></p>
+</div>
 
 <select id="selectCity">
     <option value="a">itme1</option>
@@ -20,10 +22,27 @@
 }
 @section Scripts{
     <script>
+        const divp = document.querySelector('#p1');
+
         const selCity = document.querySelector('#selectCity');
         const selDistricts = document.querySelector('#selectDistricts');
         const selRoads = document.querySelector('#selectRoads');
         const spnAddress = document.querySelector('#spanAddress');
+
+        //接收HW2的使用者名稱        
+        (async() => {
+            const url = '@Url.Content("~/api/storeuserdata/")';
+            const response = await fetch(url);
+            console.log(response);
+            const data = await response.text();
+            const json = JSON.parse(data);
+            const Jname = json.Name;
+            const Jid = json.MemberId;
+            divp.textContent = '登入者 :' + Jname;
+        })();
+
+
+
         //載入鄉鎮區
         const loadDistricts = async () => {
             //console.log(selCity.value);

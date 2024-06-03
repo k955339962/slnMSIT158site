@@ -13,6 +13,8 @@ namespace prjMSIT158site.Controllers
     {
         private readonly MyDBContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
+
+        private static string pp = "";
         // 建構子注入資料庫上下文
         public ApiController(MyDBContext context,IWebHostEnvironment hostEnvironment) 
         {
@@ -48,6 +50,14 @@ namespace prjMSIT158site.Controllers
         {
             var roads = _context.Addresses.Where(x => x.SiteId == districts).Select(x => x.Road);
             return Json(roads);
+        }
+
+        //儲存使用者資料
+        public IActionResult StoreUserData()
+        {
+            string aa = pp;
+            string bb = aa;
+            return Content(bb, "text/plain", System.Text.Encoding.UTF8);
         }
 
         //檢查帳號是否存在
@@ -90,7 +100,7 @@ namespace prjMSIT158site.Controllers
                 json = JsonSerializer.Serialize(user);
                 //HttpContext.Session.SetString(CDictionary.SK_LOGIN_MEMBER, json);
 
-                //return RedirectToAction("Index");
+                pp = json;
             }
             //=====================================================
             
@@ -195,6 +205,7 @@ namespace prjMSIT158site.Controllers
         }
 
 
+        
 
         public IActionResult Avatar(int id=1)
         {

@@ -31,12 +31,15 @@
 
         //接收HW2的使用者名稱        
         (async() => {
-            const url = '@Url.Content("~/api/storeuserdata/")';
+            const url = '@Url.Content("~/home/storeuserdata")';
             const response = await fetch(url);
-            console.log(response);
-            const data = await response.text();
+            console.log('response = ' + response);
+            const data = await response.json();
+            console.log('data = ' + data);
             const json = JSON.parse(data);
+            console.log('json = ' + json);
             const Jname = json.Name;
+            console.log('Jname = ' + Jname);
             const Jid = json.MemberId;
             divp.textContent = '登入者 :' + Jname;
         })();

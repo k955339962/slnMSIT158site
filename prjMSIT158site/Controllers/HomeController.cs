@@ -9,6 +9,8 @@ namespace prjMSIT158site.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly MyDBContext _context;
 
+        private static string pp = "";
+
         public HomeController(ILogger<HomeController> logger, MyDBContext context)
         {
             _logger = logger;
@@ -62,6 +64,21 @@ namespace prjMSIT158site.Controllers
             return View();
         }
 
+
+        public IActionResult StoreUserData()
+        {
+            string aa = pp;
+            string bb = aa;
+            return Json(pp);
+        }
+        [HttpPost]
+        public IActionResult StoreUserData([FromBody] string p)
+        {
+            pp = p;
+            string aa = pp;
+            string bb = aa;
+            return Json(p);
+        }
 
 
 
